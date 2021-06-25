@@ -134,7 +134,7 @@ def pack8583(dic):#dict to byte str
 			
 			field_hex = b''
 			if FIELD_TYPE[field] in (TYPEA,TYPES,TYPEAN,TYPEAS,TYPEANS,TYPEB):
-				field_hex = field_data
+				field_hex = field_data + (field_true_length-field_length)*b'\x00'
 			elif FIELD_TYPE[field] in (TYPENS,TYPEN,TYPEZ):
 				if (field_true_length%2) == 1:
 					field_true_length += 1
@@ -302,6 +302,7 @@ if __name__ == '__main__':
 		'field_41':'00000001',
 		'field_42':'000000000000001',
 		'field_49':'344',
+		'field_64':'1234567',
 		'field_65':'1',
 		'field_66':'2',
 	}
