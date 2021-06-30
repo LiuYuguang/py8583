@@ -277,24 +277,27 @@ def unpack8583(data):#byte str to dict
 	return dic
 
 def comm(ip,port,sendData):
+	import socket
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM,socket.IPPROTO_TCP)
-	address = (ip,port)
-	s.connect(address)
+	s.connect((ip,port))
 
 	sendLen = len(sendData)
 	sendData = sendLen.to_bytes(length=2,byteorder='big',signed=False) + sendData
 	s.send(sendData)
 
 	recvLen = s.recv(2)
+	if len(recvLen) == 0:
+		raise ValueError('recv length close by peer')
 	if len(recvLen) != 2:
-		s.close()
-		return b''
+		raise ValueError('recv length format error')
+	
 	recvLen = int.from_bytes(recvLen,byteorder = 'big',signed=False)
-
 	recvData = s.recv(recvLen)
+	if len(recvData) == 0:
+		raise ValueError('recv data close by peer')
 	if len(recvData) != recvLen:
-		s.close()
-		return b''
+		raise ValueError('recv data format error')
+		
 	s.close()
 	return recvData
 
